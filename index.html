@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Tool Wear Predictor</title>
+
+    <!-- Tabler Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
+    />
+
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+
+    <!-- Our CSS -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <!-- ── TOP BAR ── -->
+      <div class="top-bar">
+        <div>
+          <h1><i class="ti ti-tool"></i> AI Tool Wear Predictor</h1>
+          <div class="sub">
+            AI-Integrated Predictive Maintenance System &nbsp;·&nbsp; Mechanical
+            Engineering Project
+          </div>
+          <div class="tags">
+            <span class="tag tag-blue">ISO 3685</span>
+            <span class="tag tag-green">Taylor's Extended Eq.</span>
+            <span class="tag tag-amber">Anthropic AI Analysis</span>
+            <span class="tag tag-blue">Hastings Temp Model</span>
+            <span class="tag tag-green">Kienzle Force Model</span>
+          </div>
+        </div>
+        <div class="author">
+          <!-- ✏️ CHANGE THIS TO YOUR NAME -->
+          <strong>Your Name Here</strong>
+          Mechanical Engineering<br />
+          Final Year Project
+        </div>
+      </div>
+
+      <!-- ── FORMULA BAR ── -->
+      <div class="formula-bar">
+        <i class="ti ti-math-function"></i>
+        <div>
+          <div class="formula-title">Taylor's Extended Tool Life Equation</div>
+          <code>
+            V · T<sup>n</sup> · f<sup>a</sup> · d<sup>b</sup> = C &nbsp;|&nbsp;
+            ISO 3685: VB<sub>max</sub> = 0.3 mm &nbsp;|&nbsp; n, a, b, C from
+            Boothroyd &amp; Knight literature
+          </code>
+        </div>
+      </div>
+
+      <!-- ── INPUT PARAMETERS ── -->
+      <div class="grid-2">
+        <!-- Cutting Parameters -->
+        <div class="card">
+          <div class="card-label">
+            <i class="ti ti-adjustments"></i> Cutting parameters
+          </div>
+
+          <div class="param-row">
+            <label>Cutting speed V (m/min)</label>
+            <input
+              type="range"
+              id="spd"
+              min="20"
+              max="400"
+              value="120"
+              step="5"
+              oninput="
+                document.getElementById('v-spd').textContent = this.value
+              "
+            />
+            <span class="pval" id="v-spd">120</span>
+          </div>
+
+          <div class="param-row">
+            <label>Feed rate f (mm/rev)</label>
+            <input
+              type="range"
+              id="fed"
+              min="0.05"
+              max="0.80"
+              value="0.15"
+              step="0.01"
+              oninput="
+                document.getElementById('v-fed').textContent = parseFloat(
+                  this.value,
+                ).toFixed(2)
+              "
+            />
+            <span class="pval" id="v-fed">0.15</span>
+          </div>
+
+          <div class="param-row">
+            <label>Depth of cut d (mm)</label>
+            <input
+              type="range"
+              id="doc"
+              min="0.1"
+              max="5.0"
+              value="1.5"
+              step="0.1"
+              oninput="
+                document.getElementById('v-doc').textContent = parseFloat(
+                  this.value,
+                ).toFixed(1)
+              "
+            />
+            <span class="pval" id="v-doc">1.5</span>
+          </div>
+
+          <div class="param-row">
+            <label>Temperature (°C)</label>
+            <input
+              type="range"
+              id="tmp"
+              min="100"
+              max="900"
+              value="380"
+              step="10"
+              oninput="
+                document.getElementById('v-tmp').textContent = this.value
+              "
+            />
+            <span class="pval" id="v-tmp">380</span>
+          </div>
+        </div>
+
+        <!-- Sensor Readings -->
+        <div class="card">
+          <div class="card-label">
+            <i class="ti ti-wave-sine"></i> Sensor readings &amp; setup
+          </div>
+
+          <div class="param-row">
+            <label>Vibration RMS (mm/s)</label>
+            <input
+              type="range"
+              id="vib"
+              min="0.1"
+              max="5.0"
+              value="0.8"
+              step="0.1"
+              oninput="
+                document.getElementById('v-vib').textContent = parseFloat(
+                  this.value,
+                ).toFixed(1)
+              "
+            />
+            <span class="pval" id="v-vib">0.8</span>
+          </div>
+
+          <div class="param-row">
+            <label>Elapsed time (min)</label>
+            <input
+              type="range"
+              id="tme"
+              min="1"
+              max="300"
+              value="45"
+              step="1"
+              oninput="
+                document.getElementById('v-tme').textContent = this.value
+              "
+            />
+            <span class="pval" id="v-tme">45</span>
+          </div>
+
+          <div class="sel-group" style="margin-top: 12px">
+            <label>Tool material</label>
+            <select id="stool">
+              <option>Carbide (WC-Co)</option>
+              <option>High Speed Steel (HSS M42)</option>
+              <option>Ceramic (Al₂O₃)</option>
+              <option>CBN (Cubic Boron Nitride)</option>
+              <option>PCD (Polycrystalline Diamond)</option>
+            </select>
+          </div>
+
+          <div class="sel-group">
+            <label>Workpiece material</label>
+            <select id="swork">
+              <option>Mild Steel (AISI 1020)</option>
+              <option>Stainless Steel (SS 304)</option>
+              <option>Aluminium Alloy (Al 6061)</option>
+              <option>Titanium Alloy (Ti-6Al-4V)</option>
+              <option>Inconel 718</option>
+              <option>Cast Iron (Grey)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── RUN BUTTON ── -->
+      <button class="run-btn" id="rbtn" onclick="runPred()">
+        <i class="ti ti-cpu"></i> Run Wear Analysis
+      </button>
+
+      <!-- ── RESULTS (hidden until prediction runs) ── -->
+      <div class="results" id="results">
+        <!-- Row 1: Wear metrics -->
+        <div class="grid-4" style="margin-bottom: 12px">
+          <div class="mc">
+            <div class="ml">Wear classification</div>
+            <div class="mv" id="r-lvl">—</div>
+            <div class="ms">ISO 3685 grade</div>
+          </div>
+          <div class="mc">
+            <div class="ml">Flank wear VB (mm)</div>
+            <div class="mv" id="r-vb">—</div>
+            <div class="ms">failure @ 0.3 mm</div>
+          </div>
+          <div class="mc">
+            <div class="ml">RUL (min)</div>
+            <div class="mv" id="r-rul">—</div>
+            <div class="ms">remaining useful life</div>
+          </div>
+          <div class="mc">
+            <div class="ml">Wear rate (μm/min)</div>
+            <div class="mv" id="r-rate">—</div>
+            <div class="ms">avg progression</div>
+          </div>
+        </div>
+
+        <!-- Row 2: Physics engine outputs -->
+        <div class="grid-4" style="margin-bottom: 16px">
+          <div class="mc">
+            <div class="ml">Tool life T (min)</div>
+            <div class="mv neutral" id="r-tlife">—</div>
+            <div class="ms">Taylor prediction</div>
+          </div>
+          <div class="mc">
+            <div class="ml">Interface temp (°C)</div>
+            <div class="mv neutral" id="r-teff">—</div>
+            <div class="ms">Hastings model</div>
+          </div>
+          <div class="mc">
+            <div class="ml">Cutting force Fc (N)</div>
+            <div class="mv neutral" id="r-fc">—</div>
+            <div class="ms">Kienzle model</div>
+          </div>
+          <div class="mc">
+            <div class="ml">Wear mechanism</div>
+            <div class="mv mech" id="r-mech">—</div>
+            <div class="ms">dominant mode</div>
+          </div>
+        </div>
+
+        <!-- Wear Progress Bar -->
+        <div class="card" style="margin-bottom: 16px">
+          <div class="wear-header">
+            <div class="card-label" style="margin-bottom: 0">
+              Tool life consumed
+            </div>
+            <span class="pct-label" id="r-pct">—</span>
+          </div>
+          <div class="wear-track">
+            <div class="wear-fill" id="wfill" style="width: 0%"></div>
+          </div>
+          <div class="wear-legend">
+            <span>New tool (VB = 0)</span>
+            <span>Warning zone (VB = 0.2 mm)</span>
+            <span>ISO failure (VB = 0.3 mm)</span>
+          </div>
+        </div>
+
+        <!-- Wear Chart -->
+        <div class="card" style="margin-bottom: 16px">
+          <div class="card-label">
+            <i class="ti ti-chart-line"></i> Wear progression vs. cutting time
+          </div>
+          <div class="chart-legend-row">
+            <span
+              ><span class="dot-sq" style="background: #185fa5"></span>Predicted
+              flank wear VB (mm)</span
+            >
+            <span
+              ><span
+                class="dot-sq"
+                style="background: rgba(226, 75, 74, 0.55)"
+              ></span
+              >ISO 3685 failure (0.3 mm)</span
+            >
+            <span
+              ><span
+                class="dot-sq"
+                style="background: rgba(239, 159, 39, 0.5)"
+              ></span
+              >Warning zone (0.2 mm)</span
+            >
+          </div>
+          <div class="chart-wrap">
+            <canvas
+              id="wChart"
+              role="img"
+              aria-label="Line chart: predicted flank wear VB vs cutting time"
+            >
+              Predicted flank wear progression over cutting time.
+            </canvas>
+          </div>
+        </div>
+
+        <!-- AI Analysis -->
+        <div class="card">
+          <div class="ai-header">
+            <span class="ai-dot"></span>
+            <span class="ai-header-label"
+              >AI Engineering Analysis — Powered by Claude (Anthropic)</span
+            >
+          </div>
+          <div class="ai-body" id="ai-out">—</div>
+          <div class="mech-note" id="mech-note" style="display: none"></div>
+        </div>
+      </div>
+
+      <!-- ── FOOTER ── -->
+      <div class="footer">
+        Physics engine: Taylor's Extended Eq. · Hastings Temp Model · Kienzle
+        Force Model · ISO 3685 &nbsp;·&nbsp; Mechanical Engineering Final Year
+        Project
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
